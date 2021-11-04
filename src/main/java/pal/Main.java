@@ -19,7 +19,6 @@ public class Main {
         for (Node n : p2.nodes)
             sb.append(n.label + " ");
 
-//        sb.setLength(sb.length() - 1); // remove last empty char at the end
         System.out.println(sb.toString());
     }
 
@@ -31,49 +30,6 @@ public class Main {
                     return true;
             }
         }
-        return false;
-    }
-
-    // compare two nodes based on their's neighbours degrees
-    private boolean sameDegNeighExists(Pack p, Node n, List<Integer> nodesSameDeg){
-        if (nodesSameDeg.size() <= 1)
-            return true;
-
-        int[] neighboursDegrees = new int[n.adjacentNodes.size()];
-        boolean exists = false;
-        for (Node i : n.adjacentNodes){
-            if (!p.nodes.contains(i)) // check only neigbhours within the pack
-                continue;
-
-
-        }
-        return false;
-    }
-
-    private static List<Integer> getListOfNeighbourDegrees(Node n, Pack p){
-        List<Integer> neighDegrees = new LinkedList<>();
-
-        for (Node i : n.adjacentNodes){
-            if (p.nodes.contains(graph[i.label]))
-                neighDegrees.add(graph[i.label].mapDegrees.get(p));
-        }
-        return neighDegrees;
-    }
-
-    public static boolean checkNeighs(Pack pack1, Pack pack2){
-        //  list of neighbour's degrees
-        // each outter list is a node and inner lists are node's neighours degree
-        List<List<Integer>> currentPackNodeDegrees = new ArrayList<>();
-        currentPackNodeDegrees.addAll(pack1.mapDegrees.values());
-
-//        for (Map.Entry<Integer, List<Integer>> pack1Iter : pack1.mapDegrees.entrySet()){ // for each key in map // deg
-//            for (int i : pack1Iter.getValue()){ // for each :node.label: in list at 'key'
-//                // find a combination where each neigh have same deg -> if not -> is not isomorph
-//                if (!sameDegNeighExists(pack1, graph[i], pack2.mapDegrees.get(pack1Iter.getKey())))
-//                    return false;
-//            }
-//        }
-
         return false;
     }
 
