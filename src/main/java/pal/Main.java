@@ -33,6 +33,51 @@ public class Main {
         return false;
     }
 
+    private static void updatePackNodesNeighbourDegrees(Pack p){
+        for (Node n : p.nodes){
+            // check each neighbour
+            if (n.mapAdjacentDegrees.containsKey(p))
+                continue;
+
+            List<Integer> neighDegrees = new ArrayList<>();
+            for (Node adjacentNode : n.adjacentNodes){
+                if (p.nodes.contains(adjacentNode))
+                    neighDegrees.add(adjacentNode.mapDegrees.get(p));
+            }
+            Collections.sort(neighDegrees);
+            n.mapAdjacentDegrees.put(p, neighDegrees);
+        }
+    }
+
+    public static boolean hasEqualAdjacentDegrees(Pack pack1, Pack pack2){
+        boolean[] hasSame = new boolean[pack1.nodes.size()];
+        Set<Integer> pack2NodesUsed = new HashSet<>();
+        Set<Integer> pack1NodesUsed = new HashSet<>();
+
+        int idx = 0;
+        for (Map.Entry<Integer, List<Integer>> packDegrees : pack1.mapDegrees.entrySet()){
+            for (int i : packDegrees.getValue()) {
+                Node node = graph[i];
+                for (int j : pack2.mapDegrees.get(packDegrees.getKey())) { // iterate all possible pack2 combination and find same adjacentNodesDegrees
+                    Node possibleNode = graph[j];
+                    if (!pack1NodesUsed.contains(i) && !pack2NodesUsed.contains(j) && possibleNode.mapAdjacentDegrees.get(pack2).equals(node.mapAdjacentDegrees.get(pack1))){
+                        hasSame[idx] = true;
+                        pack2NodesUsed.add(j);
+                        pack1NodesUsed.add(i);
+                    }
+                }
+                idx++;
+            }
+        }
+
+        for (boolean i : hasSame) {
+            if (i == false)
+                return false;
+        }
+
+        return true;
+    }
+
     public static void findIsoPacks(List<Pack> correctPacks){
         Set<Set<Integer>> printed = new HashSet<>();
 
@@ -46,10 +91,15 @@ public class Main {
                         continue;
                     // check isomorphism
                     if (Arrays.equals(correctPacks.get(i).nodesDegrees, correctPacks.get(j).nodesDegrees)){
+
+                        updatePackNodesNeighbourDegrees(correctPacks.get(i));
+                        updatePackNodesNeighbourDegrees(correctPacks.get(j));
+
+                        if (!hasEqualAdjacentDegrees(correctPacks.get(i), correctPacks.get(j)) )
+                            continue;
+
                         // check if this combination was already printed
                         Set<Integer> currentMerged = new HashSet<>();
-
-//                        checkNeighs(correctPacks.get(i), correctPacks.get(j));
                         for (Node x : correctPacks.get(i).nodes)
                             currentMerged.add(x.label);
                         for (Node x : correctPacks.get(j).nodes)
@@ -84,8 +134,8 @@ public class Main {
         for (int i = 0; i < n_connections; i++){
             Node from = new Node(r.nextInt());
             Node to = new Node(r.nextInt());
-            graph[from.label].adjacentNodes.add(to);
-            graph[to.label].adjacentNodes.add(from);
+            graph[from.label].adjacentNodes.add(graph[to.label]);
+            graph[to.label].adjacentNodes.add(graph[from.label]);
         }
 
         PackGenerator generator = new PackGenerator(set, graph, pack_conn);

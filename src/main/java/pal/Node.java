@@ -7,6 +7,7 @@ public class Node {
     public int label;
     public List<Node> adjacentNodes = new ArrayList<>();
     public Map<Pack, Integer> mapDegrees = new HashMap<>();
+    public Map<Pack, List<Integer>> mapAdjacentDegrees = new HashMap<>();
 
     public Node(int label) {
         this.label = label;
