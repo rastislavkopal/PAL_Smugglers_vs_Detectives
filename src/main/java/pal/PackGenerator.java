@@ -2,6 +2,7 @@ package pal;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PackGenerator {
 
@@ -38,11 +39,16 @@ public class PackGenerator {
     // returns whether a pack is connected
     // also checks the number of roads between points
     public boolean isConnected(int[] pack) {
+      Set<Integer> packNodes =  Arrays.stream(pack).boxed().collect(Collectors.toSet());
       Set<Integer> visited = new HashSet<>();
       int edgesVisited = 0;
 
+
       for (int i : pack) {// for each node in pack check neighbours
+            int packEdgescount = 0;
             for (Node adjacentNode : graph[i].adjacentNodes){
+                if (packNodes.contains(adjacentNode.label))
+                    packEdgescount++;
                 if (!visited.contains(adjacentNode.label) && isNodeInResult(adjacentNode.label, pack) != -1){
                     visited.add(adjacentNode.label);
                     edgesVisited++;
@@ -50,6 +56,8 @@ public class PackGenerator {
                     edgesVisited++;
                 }
             }
+          if (packEdgescount == 0)
+              return false;
       }
       return edgesVisited == 2*pack_connections;
     }
